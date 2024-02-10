@@ -1,8 +1,7 @@
-'use client'
-import React from 'react';
-import { Avatar, Button, Form, Input, List } from 'antd';
-import { useMutation, useQuery, gql } from '@apollo/client';
-
+"use client";
+import React from "react";
+import { Avatar, List } from "antd";
+import { useQuery, gql } from "@apollo/client";
 
 const GET_BOOKS = gql`
   query {
@@ -15,21 +14,26 @@ const GET_BOOKS = gql`
 `;
 
 const App: React.FC = () => {
-  const { loading, error, data } = useQuery<{ books: { _id: string, title: string, author: string }[] }>(GET_BOOKS);
+  const { loading, data } = useQuery<{
+    books: { _id: string; title: string; author: string }[];
+  }>(GET_BOOKS, {
+    pollInterval: 1000,
+  });
 
   return (
-    <div
-      className='!m-10'
-    >
-
-
+    <div className="!m-10">
       <List
         itemLayout="horizontal"
         dataSource={data?.books}
+        loading={loading}
         renderItem={(item, index) => (
           <List.Item key={item._id}>
             <List.Item.Meta
-              avatar={<Avatar src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`} />}
+              avatar={
+                <Avatar
+                  src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${index}`}
+                />
+              }
               title={<p>{item.title}</p>}
               description={item.author}
             />
@@ -38,6 +42,6 @@ const App: React.FC = () => {
       />
     </div>
   );
-}
+};
 
 export default App;

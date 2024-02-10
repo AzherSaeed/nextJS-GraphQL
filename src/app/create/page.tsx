@@ -15,6 +15,15 @@ export default function CreateBook() {
     const [createBook] = useMutation(CREATE_BOOK);
     const router = useRouter();
 
+    async function createBookHandler ({ title, author }: { title: string, author: string }){
+        try {
+             await createBook({ variables: { title, author } });
+            router.push("/");
+        } catch (error) {
+            console.error('Error creating book:', error);
+        }
+    }
+
     return <div className="m-10">
         <Form
             name="wrap"
@@ -24,14 +33,7 @@ export default function CreateBook() {
             wrapperCol={{ flex: 1 }}
             colon={false}
             style={{ maxWidth: 600 }}
-            onFinish={async ({ title, author }: { title: string, author: string }) => {
-                try {
-                    const { data } = await createBook({ variables: { title, author } });
-                    router.push("/");
-                } catch (error) {
-                    console.error('Error creating book:', error);
-                }
-            }}
+            onFinish={createBookHandler }
         >
             <Form.Item label="Book Title" name="title" rules={[{ required: true }]}>
                 <Input />
